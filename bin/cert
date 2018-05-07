@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# SEE: http://www.mpon.me/entry/2018/02/12/200000
+
+set -o errexit
+set -o nounset
+
+# set following environment variables
+# DOMAIN
+# EMAIL
+
+# ===================================================
+# Build cert bot docker image
+# ===================================================
+
+IMAGE_NAME="certbot:local"
+# build certbot image 
+pushd certbot
+docker build . -t $IMAGE_NAME
+popd
+
+# ===================================================
+# Issue certificate
+# ===================================================
+
+
+LETSENCRYPT_PATH="$(pwd)/letsencrypt"
+
+docker run -it --rm \
+  -e DOMAIN="$DOMAIN" \
+  -e EMAIL="$EMAIL" \
+  -v "${LETSENCRYPT_PATH}:/etc/letsencrypt" "$IMAGE_NAME"
